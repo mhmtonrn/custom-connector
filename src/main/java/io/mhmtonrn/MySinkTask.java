@@ -27,8 +27,8 @@ public class MySinkTask extends SinkTask {
     public void put(Collection<SinkRecord> records) {
         log.info("kayit sayisi:{}", records.size());
         for (SinkRecord record : records) {
-            System.out.printf("Topic: %s, Partition: %d, Offset: %d, Value: %s%n", record.topic(), record.kafkaPartition(), record.kafkaOffset(), record.value());
-
+            log.error("Topic: {}, Partition: {}, Offset: {}, Value: {}\n", record.topic(), record.kafkaPartition(), record.kafkaOffset(), record.value());
+            log.error("type of object {}", record.value().getClass().getName());
             try {
                 CrawlDto crawlDto = objectMapper.readValue(record.value().toString(), CrawlDto.class);
                 log.error("{}", crawlDto);
