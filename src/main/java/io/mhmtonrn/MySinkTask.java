@@ -25,6 +25,11 @@ public class MySinkTask extends SinkTask {
     @Override
     public void put(Collection<SinkRecord> records) {
         log.info("kayit sayisi:{}", records.size());
+        try {
+            Thread.sleep(30000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         for (SinkRecord record : records) {
             log.error("Topic: {}, Partition: {}, Offset: {}, Value: {}\n", record.topic(), record.kafkaPartition(), record.kafkaOffset(), record.value());
             log.error("type of object {}", record.value().getClass().getName());
@@ -32,9 +37,7 @@ public class MySinkTask extends SinkTask {
             HashMap<String, Object> value = (HashMap<String, Object>) record.value();
             for (Map.Entry<String, Object> entry : value.entrySet()) {
                 log.error(entry.getKey() + " = " + entry.getValue());
-                if (entry.getValue().equals("test")){
-                    throw new RuntimeException("hata var");
-                }
+
             }
 
         }
