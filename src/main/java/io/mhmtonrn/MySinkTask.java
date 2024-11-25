@@ -32,8 +32,11 @@ public class MySinkTask extends SinkTask {
             HashMap<String, Object> value = (HashMap<String, Object>) record.value();
             for (Map.Entry<String, Object> entry : value.entrySet()) {
                 log.error(entry.getKey() + " = " + entry.getValue());
+                if (entry.getValue().equals("test")){
+                    throw new RuntimeException("hata var");
+                }
             }
-            
+
         }
     }
 
