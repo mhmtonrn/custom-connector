@@ -1,14 +1,13 @@
 package io.mhmtonrn;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.mhmtonrn.data.CrawlDto;
 import org.apache.kafka.connect.sink.SinkRecord;
 import org.apache.kafka.connect.sink.SinkTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 public class MySinkTask extends SinkTask {
@@ -29,14 +28,12 @@ public class MySinkTask extends SinkTask {
         for (SinkRecord record : records) {
             log.error("Topic: {}, Partition: {}, Offset: {}, Value: {}\n", record.topic(), record.kafkaPartition(), record.kafkaOffset(), record.value());
             log.error("type of object {}", record.value().getClass().getName());
-            try {
-                CrawlDto crawlDto = objectMapper.readValue(record.value().toString(), CrawlDto.class);
-                log.error("{}", crawlDto);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
+            //CrawlDto crawlDto = objectMapper.readValue(record.value().toString(), CrawlDto.class);
+            HashMap<String, Object> value = (HashMap<String, Object>) record.value();
+            for (Map.Entry<String, Object> entry : value.entrySet()) {
+                log.error(entry.getKey() + " = " + entry.getValue());
             }
-
-
+            
         }
     }
 
