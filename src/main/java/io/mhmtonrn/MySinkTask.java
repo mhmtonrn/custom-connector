@@ -1,9 +1,10 @@
 package io.mhmtonrn;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.mhmtonrn.data.CrawlDto;
 import org.apache.kafka.connect.sink.SinkRecord;
 import org.apache.kafka.connect.sink.SinkTask;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,16 +29,19 @@ public class MySinkTask extends SinkTask {
         for (SinkRecord record : records) {
             System.out.printf("Topic: %s, Partition: %d, Offset: %d, Value: %s%n", record.topic(), record.kafkaPartition(), record.kafkaOffset(), record.value());
 
-            JSONObject jsonObject = new JSONObject(record.value());
+            try {
+                CrawlDto crawlDto = objectMapper.readValue(record.value().toString(), CrawlDto.class);
+                log.error("{}", crawlDto);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
 
-            log.error(jsonObject.toString());
 
         }
     }
 
     @Override
     public void stop() {
-        // Task durdurma işlemleri
         System.out.println("Task durduruluyor...");
     }
 
